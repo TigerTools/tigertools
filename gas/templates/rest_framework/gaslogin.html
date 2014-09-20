@@ -1,0 +1,54 @@
+{% load url from future %}
+{% load rest_framework %}
+<html>
+
+    <head>
+        {% block style %}
+        {% block bootstrap_theme %}
+            <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
+            <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}"/>
+        {% endblock %}
+        <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/default.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "css/tigertools.css" %}"/>
+        {% endblock %}
+        {% block script %}
+            <script src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+        {% endblock %}
+    </head>
+
+    <body class="container">
+
+        <div class="container-fluid" style="margin-top: 30px">
+            <div class="row-fluid">
+                <div class="well" style="width: 320px; margin-left: auto; margin-right: auto">
+                    <div class="row-fluid">
+                            {% block branding %}<h3 style="margin: 0 0 0 60px">Tiger.Tools Gas</h3>{% endblock %}
+                    </div><!-- /row fluid -->
+
+                    
+                     <div class="row-fluid">
+                        <div id="thirdpartylogin" >
+                          <div class="fb-icon-bg"></div>
+                            <div class="fb-bg"></div>
+                          <div class="g-icon-bg"></div>
+                            <div class="g-bg"></div>
+                        </div>
+                    </div><!-- /.row-fluid -->
+                </div><!--/.well-->
+            </div><!-- /.row-fluid -->
+        </div><!-- /.container-fluid -->
+        <script type="text/javascript">
+            $( document ).ready(function() {
+                $(".fb-icon-bg,.fb-bg").click(function () {
+                    window.location='{% url 'social:begin' 'facebook' %}?next={{ request.GET.next }}';
+                });
+
+                $(".g-icon-bg,.g-bg").click(function () {
+                    window.location='{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next }}';
+                });
+
+            });
+
+</script>
+    </body>
+</html>

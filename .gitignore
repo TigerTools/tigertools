@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+static/*
+nohup.out
+.installed.cfg
+build/
