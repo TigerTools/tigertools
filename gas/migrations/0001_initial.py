@@ -19,6 +19,15 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'gas', ['GasStation'])
 
+        # Adding model 'GasVehicle'
+        db.create_table(u'gas_gasvehicle', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('make', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('year', self.gf('django.db.models.fields.IntegerField')(default=None, max_length=4, null=True)),
+        ))
+        db.send_create_signal(u'gas', ['GasVehicle'])
+
         # Adding model 'GasPurchase'
         db.create_table(u'gas_gaspurchase', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -32,12 +41,14 @@ class Migration(SchemaMigration):
 
         # Adding model 'GasLineItem'
         db.create_table(u'gas_gaslineitem', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('amount', self.gf('tigertools.fields.CurrencyField')(default=0, max_digits=10, decimal_places=2)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('type', self.gf('django.db.models.fields.CharField')(default='credit', max_length=10)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('gas_purchase', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['gas.GasPurchase'], unique=True, primary_key=True)),
+            ('gas_vehicle', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['gas.GasVehicle'])),
+            ('gas_purchase', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['gas.GasPurchase'], unique=True)),
         ))
         db.send_create_signal(u'gas', ['GasLineItem'])
 
@@ -45,6 +56,9 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
         # Deleting model 'GasStation'
         db.delete_table(u'gas_gasstation')
+
+        # Deleting model 'GasVehicle'
+        db.delete_table(u'gas_gasvehicle')
 
         # Deleting model 'GasPurchase'
         db.delete_table(u'gas_gaspurchase')
@@ -94,7 +108,9 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'GasLineItem'},
             'amount': ('tigertools.fields.CurrencyField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'gas_purchase': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['gas.GasPurchase']", 'unique': 'True', 'primary_key': 'True'}),
+            'gas_purchase': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['gas.GasPurchase']", 'unique': 'True'}),
+            'gas_vehicle': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['gas.GasVehicle']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'default': "'credit'", 'max_length': '10'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
@@ -116,6 +132,13 @@ class Migration(SchemaMigration):
             'longitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '6', 'decimal_places': '3', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'default': "'unknown'", 'max_length': '128'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+        },
+        u'gas.gasvehicle': {
+            'Meta': {'object_name': 'GasVehicle'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'make': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'year': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'max_length': '4', 'null': 'True'})
         }
     }
 

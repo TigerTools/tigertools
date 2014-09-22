@@ -45,6 +45,15 @@ class Ledger(models.Model):
     amount = CurrencyField('amount', default=0)
     average = 0
 
+class Vehicle(models.Model):
+    def __unicode__( self ):
+        return ("%s, %s %s" % (self.year, self.make, self.name))
+    class Meta:
+        abstract = True
+    name = models.CharField(max_length = 50)
+    make = models.CharField(max_length = 50)
+    year = models.IntegerField(max_length = 4, null=True, default=None)
+
 class LineItem(Ledger):
     
     TYPE_CREDIT = 'credit'

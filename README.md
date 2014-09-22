@@ -3,11 +3,12 @@
 ##Dependencies
 This application depends on a range of different software listed below.
 ###python 2.7
-###django 1.6
 ###memcached 1.4.4
+###django 1.6
+    pip install Django==1.6
 ###South
     pip install -U South
-###python-social-auth
+###python-memcached
     pip install python-memcached
 ###python-social-auth
     pip install python-social-auth
@@ -31,3 +32,5 @@ This application depends on a range of different software listed below.
     pip install django-autocomplete-light
 ###django-memcached
     pip install django-memcached
+###django-tinymce
+    pip install django-tinymce
