@@ -19,13 +19,18 @@ def compose_ledger(obj, collection):
     obj.average = (obj.amount/count) if count > 1 else obj.amount
     return obj
 
+class Hash(models.Model):
+    def __unicode__( self ):
+        return ("%s" % (self.keyhash))
+    keyhash = models.CharField(max_length = 200, blank=True, null=True)
+
 class Location(models.Model):
     def __unicode__( self ):
         return ("%s" % (self.address))
     class Meta:
         abstract = True
     user = models.ForeignKey(User)
-    address =models.CharField(max_length = 200, blank=True, null=True)
+    address = models.CharField(max_length = 200, blank=True, null=True)
     latitude = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
     longitude = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
 

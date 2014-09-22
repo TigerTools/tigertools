@@ -6,6 +6,11 @@ from django.db.models import Q
 from rest_framework import viewsets, views
 from rest_framework.response import Response
 from django.contrib.auth.models import User, Group
+from rest_framework.authtoken.models import Token
+from tigertools.serializers import TokenSerializer
+from tigertools.models import Hash
+from rest_framework import generics
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 from rest_framework_extensions.mixins import DetailSerializerMixin
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
@@ -17,7 +22,7 @@ from rest_framework_extensions.key_constructor.constructors import (
 )
 from rest_framework_extensions.key_constructor import bits
 import operator
-import pprint
+import urllib
 
 
 class TigerToolsKeyConstructor(KeyConstructor):
@@ -75,3 +80,31 @@ class TigerToolsViewSet(DetailSerializerMixin, viewsets.ModelViewSet):
         self.check_object_permissions(self.request, obj)
         return obj
 
+
+class TokenRetrieve(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    model=Token
+    serializer_class = TokenSerializer
+    def get_object(self):
+        hashkey = str(urllib.unquote(self.request.GET.get('hashkey')).decode('UTF-8'))
+        email = str(urllib.unquote(self.request.GET.get('email')).decode('UTF-8'))
+
+        try:
+            username = email.split("@")[0]
+        except:
+            return HttpResponseNotFound('<h1>' + email + ' not found</h1>')
+
+        try:
+           hash = Hash.objects.get(keyhash=hashkey)
+        except Hash.DoesNotExist:
+           return HttpResponseNotFound('<h1>' + hashkey + ' not found</h1>')
+
+        user = User.objects.filter(email=email).first()
+
+        if user == None:
+            user = User(username=username,email=email)
+            user.save()
+            token = Token.objects.create(user=user)
+            token.save()
+
+        return Token.objects.get(user=user)
