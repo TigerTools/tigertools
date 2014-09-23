@@ -1,11 +1,11 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views.decorators.cache import cache_control
 from django.db.models import Q
 from rest_framework import viewsets, views
 from rest_framework.response import Response
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group 
 from rest_framework.authtoken.models import Token
 from tigertools.serializers import TokenSerializer
 from tigertools.models import Hash
@@ -23,6 +23,7 @@ from rest_framework_extensions.key_constructor.constructors import (
 from rest_framework_extensions.key_constructor import bits
 import operator
 import urllib
+import uuid
 
 
 class TigerToolsKeyConstructor(KeyConstructor):
@@ -91,20 +92,28 @@ class TokenRetrieve(generics.RetrieveAPIView):
 
         try:
             username = email.split("@")[0]
+            mail_domain = email.split("@")[1]
+            mail_tld = mail_domain.split(".")[1]
         except:
-            return HttpResponseNotFound('<h1>' + email + ' not found</h1>')
+            raise Http404
 
         try:
            hash = Hash.objects.get(keyhash=hashkey)
         except Hash.DoesNotExist:
-           return HttpResponseNotFound('<h1>' + hashkey + ' not found</h1>')
+           raise Http404
 
         user = User.objects.filter(email=email).first()
 
         if user == None:
-            user = User(username=username,email=email)
+            if None != User.objects.filter(username=username).first():
+                if len(username) == 30:
+                    username = username[:16]
+                randomId = str(uuid.uuid4().int)
+                username = username + randomId
+                if len(username) > 30:
+                    diff = 30 - len(username)
+                    username = username[:diff]
+            user = User.objects.create(username=username,email=email)
             user.save()
-            token = Token.objects.create(user=user)
-            token.save()
 
         return Token.objects.get(user=user)
