@@ -55,6 +55,7 @@ class Vehicle(models.Model):
         return ("%s, %s %s" % (self.year, self.make, self.name))
     class Meta:
         abstract = True
+    user = models.ForeignKey(User)
     name = models.CharField(max_length = 50)
     make = models.CharField(max_length = 50)
     year = models.IntegerField(max_length = 4, null=True, default=None)

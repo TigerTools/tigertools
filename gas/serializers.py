@@ -25,8 +25,7 @@ class GasStationSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'user', 'address', 'latitude', 'longitude')
 
 class GasVehicleSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField()
     class Meta:
         model = GasVehicle
         depth = 1
-        fields = ('url', 'user', 'name', 'make', 'year')
+        fields = ('url', 'name', 'make', 'year')
