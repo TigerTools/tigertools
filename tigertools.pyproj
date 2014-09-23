@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="gas\admin.py" />
     <Compile Include="gas\migrations\0001_initial.py" />
+    <Compile Include="gas\migrations\0002_auto__add_hash.py" />
     <Compile Include="gas\migrations\__init__.py" />
     <Compile Include="gas\models.py" />
     <Compile Include="gas\serializers.py" />

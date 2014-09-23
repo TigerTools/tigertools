@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SOUTH_AUTO_FREEZE_APP = True
 
 # Application definition
 
