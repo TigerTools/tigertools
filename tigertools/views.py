@@ -3,7 +3,7 @@ from django.template import RequestContext, loader
 from django.http import HttpResponse, Http404
 from django.views.decorators.cache import cache_control
 from django.db.models import Q
-from rest_framework import viewsets, views
+from rest_framework import viewsets, views, status
 from rest_framework.response import Response
 from django.contrib.auth.models import User, Group 
 from rest_framework.authtoken.models import Token
@@ -80,6 +80,18 @@ class TigerToolsViewSet(DetailSerializerMixin, viewsets.ModelViewSet):
         obj = get_object_or_404(queryset, **filter_kwargs)
         self.check_object_permissions(self.request, obj)
         return obj
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.DATA, files=request.FILES)
+
+        if serializer.is_valid():
+            self.pre_save(serializer.object)
+            self.object = serializer.save(user=request.user, force_insert=True)
+            self.post_save(self.object, created=True)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED,
+                            headers=headers)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TokenRetrieve(generics.RetrieveAPIView):

@@ -16,3 +16,7 @@ admin.site.register(models.GasPurchase, GasPurchaseAdmin)
 class GasStationAdmin(admin.ModelAdmin):
     pass
 admin.site.register(models.GasStation, GasStationAdmin)
+
+class GasVehicleAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(models.GasVehicle, GasVehicleAdmin)
