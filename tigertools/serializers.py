@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 
 class UserListingField(serializers.RelatedField):
     def to_native(self, value):
-        return ('%s') % (value.username)
+        return ('%s') % (value.id)
 
 class TokenSerializer(serializers.HyperlinkedModelSerializer):
     user = UserListingField()
